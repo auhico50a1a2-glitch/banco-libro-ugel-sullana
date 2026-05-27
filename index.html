@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco del Libro - UGEL Sullana 2026</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f5f5f5; }
         .header { background: #1e40af; color: white; padding: 1.5rem; text-align: center; }
         .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
-        .tabs { display: flex; gap: 1rem; margin: 2rem 0; }
+        .tabs { display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
         .tab-btn { padding: 0.8rem 1.5rem; background: white; border: 2px solid #1e40af; cursor: pointer; border-radius: 6px; font-weight: bold; }
         .tab-btn.active { background: #1e40af; color: white; }
         .tab-content { display: none; }
@@ -21,8 +22,10 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
         .section { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #1e40af; }
         .section-title { font-size: 1.2rem; font-weight: bold; color: #1e40af; margin-bottom: 1rem; }
-        button { padding: 0.8rem 1.5rem; background: #1e40af; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button { padding: 0.8rem 1.5rem; background: #1e40af; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 0.5rem; margin-bottom: 0.5rem; }
         button:hover { background: #162d7a; }
+        button.export { background: #27ae60; }
+        button.export:hover { background: #1e8449; }
         table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
         th { background: #1e40af; color: white; padding: 0.8rem; text-align: left; }
         td { padding: 0.8rem; border-bottom: 1px solid #ddd; }
@@ -30,23 +33,14 @@
         .metric-value { font-size: 2.5rem; font-weight: bold; color: #1e40af; }
         .metric-label { color: #666; margin-top: 0.5rem; }
         .chart-container { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; position: relative; height: 350px; }
+        .export-section { background: #e8f5e9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #27ae60; }
+        .export-title { font-size: 1.1rem; font-weight: bold; color: #27ae60; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
-    <div class="header" style="display: flex; align-items: center; justify-content: space-between; padding: 1.5rem;">
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAA0ADQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWm5ybnJ2eoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlbaWmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==" alt="UGEL SULLANA" style="width: 80px; height: 80px; border-radius: 8px;">
-            <div>
-                <h1 style="margin: 0; font-size: 1.8rem;">🏫 UGEL SULLANA</h1>
-                <p style="margin: 0; font-size: 0.9rem;">Banco de Libro 2026 - Sistema de Gestión</p>
-            </div>
-        </div>
-        <div style="background: #1e40af; color: #fbbf24; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; font-weight: bold; line-height: 1.6;">
-            <div style="font-size: 0.9rem;">Desarrollo e Implementación</div>
-            <div style="font-size: 1rem;">Dr. Agusto Segundo</div>
-            <div style="font-size: 1rem;">Hidalgo Córdova</div>
-            <div style="font-size: 0.85rem; margin-top: 0.5rem;">📞 MINEDU Compatible</div>
-        </div>
+    <div class="header">
+        <h1>🏫 UGEL SULLANA - Banco del Libro 2026</h1>
+        <p>Sistema de Gestión de Textos Escolares v7.0 - Con Exportación de Datos</p>
     </div>
 
     <div class="container">
@@ -123,7 +117,17 @@
                 </div>
             </div>
 
+            <!-- SECCIÓN DE EXPORTACIÓN -->
+            <div class="export-section">
+                <div class="export-title">📥 EXPORTAR DATOS</div>
+                <p style="margin-bottom: 1rem; color: #1b5e20;">Descarga los datos en formato Excel para compartir con UGEL SULLANA</p>
+                <button class="export" onclick="exportarExcelConsolidado()">📊 Descargar Excel Consolidado (Todas las IE)</button>
+                <button class="export" onclick="exportarExcelPorIE()">📋 Descargar Excel por IE (Separados)</button>
+                <button class="export" onclick="exportarCSV()">📄 Descargar CSV para SIMON</button>
+            </div>
+
             <div class="section">
+                <div class="section-title">Instituciones Registradas</div>
                 <table>
                     <thead>
                         <tr>
@@ -131,6 +135,7 @@
                             <th>Textos</th>
                             <th>📖 Com %</th>
                             <th>🔢 Mat %</th>
+                            <th>Descargar</th>
                         </tr>
                     </thead>
                     <tbody id="tablaIE"></tbody>
@@ -152,7 +157,7 @@
     </div>
 
     <script>
-        let ieData = JSON.parse(localStorage.getItem('bancoLibroV6Simple')) || [];
+        let ieData = JSON.parse(localStorage.getItem('bancoLibroV7')) || [];
         let charts = {};
 
         function showTab(tab) {
@@ -192,7 +197,6 @@
             `;
         }
 
-        // Inicializar formularios
         document.getElementById('comEstado').innerHTML = [1,2,3,4,5].map(g => crearInputEstado('com', g)).join('');
         document.getElementById('matEstado').innerHTML = [1,2,3,4,5].map(g => crearInputEstado('mat', g)).join('');
         document.getElementById('comBimestres').innerHTML = [1,2,3,4,5].map(g => crearInputBimestres('com', g)).join('');
@@ -243,9 +247,118 @@
             ie.intMat = Math.round(Object.values(ie.matBim).reduce((s, g) => s + Object.values(g).reduce((a, b) => a + b), 0) / 20);
 
             ieData.push(ie);
-            localStorage.setItem('bancoLibroV6Simple', JSON.stringify(ieData));
+            localStorage.setItem('bancoLibroV7', JSON.stringify(ieData));
             alert('✅ IE Guardada');
             location.reload();
+        }
+
+        // EXPORTACIÓN A EXCEL - OPCIÓN 1: CONSOLIDADO
+        function exportarExcelConsolidado() {
+            const wb = XLSX.utils.book_new();
+            
+            // Hoja 1: Resumen
+            const resumen = [
+                ['UGEL SULLANA - BANCO DEL LIBRO 2026', '', '', '', ''],
+                ['REPORTE CONSOLIDADO DE INSTITUCIONES EDUCATIVAS', '', '', '', ''],
+                ['Fecha de Reporte:', new Date().toLocaleDateString('es-PE'), '', '', ''],
+                ['', '', '', '', ''],
+                ['INDICADORES GENERALES', '', '', '', ''],
+                ['Total IE Registradas:', ieData.length, '', '', ''],
+                ['Total Textos en el Sistema:', ieData.reduce((s, ie) => s + ie.totalTextos, 0), '', '', ''],
+                ['% Promedio Integración Comunicación:', Math.round(ieData.reduce((s, ie) => s + ie.intCom, 0) / (ieData.length || 1)) + '%', '', '', ''],
+                ['% Promedio Integración Matemática:', Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1)) + '%', '', '', ''],
+            ];
+            const wsResumen = XLSX.utils.aoa_to_sheet(resumen);
+            XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
+
+            // Hoja 2: Detalle por IE
+            const detalle = [
+                ['INSTITUCIÓN EDUCATIVA', 'CÓDIGO MODULAR', 'DIRECTOR/A', 'TELÉFONO', 'TOTAL TEXTOS', '% COM', '% MAT']
+            ];
+            ieData.forEach(ie => {
+                detalle.push([
+                    ie.nombreIE,
+                    ie.codigoModular,
+                    ie.director,
+                    ie.telefono,
+                    ie.totalTextos,
+                    ie.intCom + '%',
+                    ie.intMat + '%'
+                ]);
+            });
+            const wsDetalle = XLSX.utils.aoa_to_sheet(detalle);
+            XLSX.utils.book_append_sheet(wb, wsDetalle, 'Detalle IE');
+
+            XLSX.writeFile(wb, `Banco_Libro_2026_Consolidado_${new Date().toISOString().slice(0,10)}.xlsx`);
+            alert('✅ Descargado: Reporte Consolidado');
+        }
+
+        // EXPORTACIÓN A EXCEL - OPCIÓN 2: POR IE
+        function exportarExcelPorIE() {
+            ieData.forEach(ie => {
+                const wb = XLSX.utils.book_new();
+                
+                const datos = [
+                    ['UGEL SULLANA - BANCO DEL LIBRO 2026', '', '', ''],
+                    ['REGISTRO DE INSTITUCIÓN EDUCATIVA', '', '', ''],
+                    ['', '', '', ''],
+                    ['Institución:', ie.nombreIE, '', ''],
+                    ['Código Modular:', ie.codigoModular, '', ''],
+                    ['Director/a:', ie.director, '', ''],
+                    ['Teléfono:', ie.telefono, '', ''],
+                    ['', '', '', ''],
+                    ['COMUNICACIÓN - ESTADO DE CONSERVACIÓN', '', '', ''],
+                    ['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable'],
+                ];
+                for (let g = 1; g <= 5; g++) {
+                    const d = ie.comEstado[g];
+                    datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
+                }
+                
+                datos.push(['', '', '', '', '', '']);
+                datos.push(['COMUNICACIÓN - USO POR BIMESTRE', '', '', '']);
+                datos.push(['Grado', 'Bim I %', 'Bim II %', 'Bim III %', 'Bim IV %']);
+                for (let g = 1; g <= 5; g++) {
+                    const b = ie.comBim[g];
+                    datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
+                }
+
+                datos.push(['', '', '', '', '', '']);
+                datos.push(['MATEMÁTICA - ESTADO DE CONSERVACIÓN', '', '', '']);
+                datos.push(['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable']);
+                for (let g = 1; g <= 5; g++) {
+                    const d = ie.matEstado[g];
+                    datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
+                }
+
+                datos.push(['', '', '', '', '', '']);
+                datos.push(['MATEMÁTICA - USO POR BIMESTRE', '', '', '']);
+                datos.push(['Grado', 'Bim I %', 'Bim II %', 'Bim III %', 'Bim IV %']);
+                for (let g = 1; g <= 5; g++) {
+                    const b = ie.matBim[g];
+                    datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
+                }
+
+                const ws = XLSX.utils.aoa_to_sheet(datos);
+                XLSX.utils.book_append_sheet(wb, ws, ie.nombreIE.substring(0, 31));
+                XLSX.writeFile(wb, `${ie.nombreIE}_BancoLibro2026.xlsx`);
+            });
+            alert('✅ Descargados: ' + ieData.length + ' archivos Excel');
+        }
+
+        // EXPORTACIÓN CSV
+        function exportarCSV() {
+            let csv = 'INSTITUCIÓN,CÓDIGO,DIRECTOR,TELÉFONO,TEXTOS,COM%,MAT%\n';
+            ieData.forEach(ie => {
+                csv += `"${ie.nombreIE}","${ie.codigoModular}","${ie.director}","${ie.telefono}",${ie.totalTextos},${ie.intCom},${ie.intMat}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Banco_Libro_2026_SIMON_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            alert('✅ Descargado: Archivo CSV para SIMON');
         }
 
         function actualizarDashboard() {
@@ -255,12 +368,18 @@
             document.getElementById('promMat').textContent = Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1)) + '%';
 
             let html = '';
-            ieData.forEach(ie => {
-                html += `<tr><td>${ie.nombreIE}</td><td>${ie.totalTextos}</td><td>${ie.intCom}%</td><td>${ie.intMat}%</td></tr>`;
+            ieData.forEach((ie, idx) => {
+                html += `<tr>
+                    <td>${ie.nombreIE}</td>
+                    <td>${ie.totalTextos}</td>
+                    <td>${ie.intCom}%</td>
+                    <td>${ie.intMat}%</td>
+                    <td><button onclick="descargarExcelUnico(${idx})" style="padding:0.5rem 1rem; font-size:0.9rem;">📥 Descargar</button></td>
+                </tr>`;
             });
             document.getElementById('tablaIE').innerHTML = html;
 
-            // GRÁFICO 1: BARRAS
+            // GRÁFICO 1
             const dataCon = {bueno: 0, regular: 0, malo: 0, noRecup: 0};
             ieData.forEach(ie => {
                 Object.values(ie.comEstado).forEach(g => {
@@ -275,53 +394,73 @@
                 type: 'bar',
                 data: {
                     labels: ['✅ Bueno', '⚠️ Regular', '❌ Malo', '🚫 No Recup'],
-                    datasets: [{
-                        label: 'Estado de Conservación',
-                        data: [dataCon.bueno, dataCon.regular, dataCon.malo, dataCon.noRecup],
-                        backgroundColor: ['#4CAF50', '#FFC107', '#FF5722', '#9C27B0']
-                    }]
+                    datasets: [{label: 'Estado de Conservación', data: [dataCon.bueno, dataCon.regular, dataCon.malo, dataCon.noRecup], backgroundColor: ['#4CAF50', '#FFC107', '#FF5722', '#9C27B0']}]
                 }
             });
 
-            // GRÁFICO 2: CIRCULAR
+            // GRÁFICO 2
             const promCom = Math.round(ieData.reduce((s, ie) => s + ie.intCom, 0) / (ieData.length || 1));
             const promMat = Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1));
             if (charts.circular) charts.circular.destroy();
             charts.circular = new Chart(document.getElementById('graficoCircular'), {
                 type: 'doughnut',
-                data: {
-                    labels: ['📖 Comunicación', '🔢 Matemática'],
-                    datasets: [{
-                        data: [promCom, promMat],
-                        backgroundColor: ['#2196F3', '#FF5722']
-                    }]
-                }
+                data: {labels: ['📖 Comunicación', '🔢 Matemática'], datasets: [{data: [promCom, promMat], backgroundColor: ['#2196F3', '#FF5722']}]}
             });
 
-            // GRÁFICO 3: LÍNEAS
+            // GRÁFICO 3
             const bimData = {I: 0, II: 0, III: 0, IV: 0};
             ieData.forEach(ie => {
-                Object.values(ie.comBim).forEach(g => {
-                    bimData.I += g.I; bimData.II += g.II; bimData.III += g.III; bimData.IV += g.IV;
-                });
-                Object.values(ie.matBim).forEach(g => {
-                    bimData.I += g.I; bimData.II += g.II; bimData.III += g.III; bimData.IV += g.IV;
-                });
+                Object.values(ie.comBim).forEach(g => {bimData.I += g.I; bimData.II += g.II; bimData.III += g.III; bimData.IV += g.IV;});
+                Object.values(ie.matBim).forEach(g => {bimData.I += g.I; bimData.II += g.II; bimData.III += g.III; bimData.IV += g.IV;});
             });
             if (charts.lineas) charts.lineas.destroy();
             charts.lineas = new Chart(document.getElementById('graficoLineas'), {
                 type: 'line',
-                data: {
-                    labels: ['Bim I', 'Bim II', 'Bim III', 'Bim IV'],
-                    datasets: [{
-                        label: 'Uso en Planificación %',
-                        data: [bimData.I, bimData.II, bimData.III, bimData.IV],
-                        borderColor: '#1e40af',
-                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
-                        tension: 0.4
-                    }]
-                }
+                data: {labels: ['Bim I', 'Bim II', 'Bim III', 'Bim IV'], datasets: [{label: 'Uso en Planificación %', data: [bimData.I, bimData.II, bimData.III, bimData.IV], borderColor: '#1e40af', backgroundColor: 'rgba(30, 64, 175, 0.1)', tension: 0.4}]}
             });
+        }
+
+        function descargarExcelUnico(idx) {
+            const ie = ieData[idx];
+            const wb = XLSX.utils.book_new();
+            const datos = [
+                ['UGEL SULLANA - BANCO DEL LIBRO 2026'],
+                ['INSTITUCIÓN: ' + ie.nombreIE],
+                ['CÓDIGO: ' + ie.codigoModular],
+                ['DIRECTOR: ' + ie.director],
+                ['TELÉFONO: ' + ie.telefono],
+                [''],
+                ['COMUNICACIÓN - ESTADO', '', '', '', '', ''],
+                ['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable'],
+            ];
+            for (let g = 1; g <= 5; g++) {
+                const d = ie.comEstado[g];
+                datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
+            }
+            datos.push(['']);
+            datos.push(['COMUNICACIÓN - BIMESTRES', '', '', '', '']);
+            datos.push(['Grado', 'I', 'II', 'III', 'IV']);
+            for (let g = 1; g <= 5; g++) {
+                const b = ie.comBim[g];
+                datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
+            }
+            datos.push(['']);
+            datos.push(['MATEMÁTICA - ESTADO', '', '', '', '', '']);
+            datos.push(['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable']);
+            for (let g = 1; g <= 5; g++) {
+                const d = ie.matEstado[g];
+                datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
+            }
+            datos.push(['']);
+            datos.push(['MATEMÁTICA - BIMESTRES', '', '', '', '']);
+            datos.push(['Grado', 'I', 'II', 'III', 'IV']);
+            for (let g = 1; g <= 5; g++) {
+                const b = ie.matBim[g];
+                datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
+            }
+            const ws = XLSX.utils.aoa_to_sheet(datos);
+            XLSX.utils.book_append_sheet(wb, ws, 'Datos IE');
+            XLSX.writeFile(wb, `${ie.nombreIE}_BancoLibro.xlsx`);
         }
     </script>
 </body>
