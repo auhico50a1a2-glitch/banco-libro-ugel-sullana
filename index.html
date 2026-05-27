@@ -8,39 +8,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; }
-        .header { background: #1e40af; color: white; padding: 1.5rem; text-align: center; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
-        .tabs { display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
-        .tab-btn { padding: 0.8rem 1.5rem; background: white; border: 2px solid #1e40af; cursor: pointer; border-radius: 6px; font-weight: bold; }
-        .tab-btn.active { background: #1e40af; color: white; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
+        .header { background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); color: white; padding: 2rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .header p { font-size: 1rem; opacity: 0.9; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+        .tabs { display: flex; gap: 0.5rem; margin: 2rem 0; flex-wrap: wrap; }
+        .tab-btn { padding: 0.9rem 1.8rem; background: white; border: 2px solid #ddd; cursor: pointer; border-radius: 8px; font-weight: 600; transition: all 0.3s; }
+        .tab-btn:hover { border-color: #1e40af; color: #1e40af; }
+        .tab-btn.active { background: #1e40af; color: white; border-color: #1e40af; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .form-group { margin: 1rem 0; }
-        label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
-        input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
-        .section { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #1e40af; }
-        .section-title { font-size: 1.2rem; font-weight: bold; color: #1e40af; margin-bottom: 1rem; }
-        button { padding: 0.8rem 1.5rem; background: #1e40af; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 0.5rem; margin-bottom: 0.5rem; }
-        button:hover { background: #162d7a; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .form-group { margin: 1.2rem 0; }
+        label { display: block; font-weight: 600; margin-bottom: 0.6rem; color: #1a1a1a; font-size: 0.95rem; }
+        input { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; transition: border 0.3s; }
+        input:focus { outline: none; border-color: #1e40af; box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+        .section { background: white; padding: 1.8rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 5px solid #1e40af; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .section-title { font-size: 1.15rem; font-weight: 700; color: #1e40af; margin-bottom: 1rem; }
+        button { padding: 0.9rem 1.8rem; background: #1e40af; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        button:hover { background: #162d7a; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3); }
         button.export { background: #27ae60; }
         button.export:hover { background: #1e8449; }
-        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-        th { background: #1e40af; color: white; padding: 0.8rem; text-align: left; }
-        td { padding: 0.8rem; border-bottom: 1px solid #ddd; }
-        .metric { background: white; padding: 1.5rem; text-align: center; border-radius: 8px; }
-        .metric-value { font-size: 2.5rem; font-weight: bold; color: #1e40af; }
-        .metric-label { color: #666; margin-top: 0.5rem; }
-        .chart-container { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; position: relative; height: 350px; }
-        .export-section { background: #e8f5e9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #27ae60; }
-        .export-title { font-size: 1.1rem; font-weight: bold; color: #27ae60; margin-bottom: 1rem; }
+        button.delete { background: #e74c3c; padding: 0.5rem 1rem; font-size: 0.85rem; }
+        button.delete:hover { background: #c0392b; }
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        th { background: #1e40af; color: white; padding: 1rem; text-align: left; font-weight: 600; }
+        td { padding: 0.8rem; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f9f9f9; }
+        .metric { background: white; padding: 1.5rem; text-align: center; border-radius: 8px; border-top: 4px solid #1e40af; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .metric-value { font-size: 2.5rem; font-weight: 700; color: #1e40af; margin: 0.5rem 0; }
+        .metric-label { color: #666; font-size: 0.9rem; font-weight: 500; }
+        .chart-container { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: relative; height: 360px; }
+        .export-section { background: #e8f5e9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 5px solid #27ae60; }
+        .export-title { font-size: 1.05rem; font-weight: 700; color: #27ae60; margin-bottom: 1rem; }
+        .success-msg { background: #d4edda; color: #155724; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #28a745; }
+        .error-msg { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #f5c6cb; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .grade-section { background: #f9fafb; padding: 1.2rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #1e40af; }
+        .grade-title { font-weight: 700; margin-bottom: 0.8rem; color: #1e40af; font-size: 1rem; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🏫 UGEL SULLANA - Banco del Libro 2026</h1>
-        <p>Sistema de Gestión de Textos Escolares v7.0 - Con Exportación de Datos</p>
+        <p>Sistema de Gestión de Textos Escolares v7.1 - Con Exportación Integrada</p>
     </div>
 
     <div class="container">
@@ -49,26 +62,29 @@
             <button class="tab-btn" onclick="showTab('dashboard')">📊 Dashboard UGEL</button>
         </div>
 
+        <div id="successMsg" class="success-msg" style="display:none;"></div>
+        <div id="errorMsg" class="error-msg" style="display:none;"></div>
+
         <!-- TAB DIRECTOR -->
         <div id="director" class="tab-content active">
             <div class="section">
                 <div class="section-title">📝 Registrar Institución Educativa</div>
-                <div class="grid">
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                     <div class="form-group">
-                        <label>Nombre IE</label>
-                        <input type="text" id="nombreIE" placeholder="IEP Rosa Cardo de Guarderas">
+                        <label>Nombre IE *</label>
+                        <input type="text" id="nombreIE" placeholder="Ej: IEP Rosa Cardo de Guarderas" required>
                     </div>
                     <div class="form-group">
-                        <label>Código Modular</label>
-                        <input type="text" id="codigoModular">
+                        <label>Código Modular *</label>
+                        <input type="text" id="codigoModular" placeholder="Ej: 150012" required>
                     </div>
                     <div class="form-group">
                         <label>Director/a</label>
-                        <input type="text" id="director">
+                        <input type="text" id="director" placeholder="Nombre completo">
                     </div>
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="tel" id="telefono">
+                        <input type="tel" id="telefono" placeholder="Ej: 073-123456">
                     </div>
                 </div>
             </div>
@@ -93,37 +109,38 @@
                 <div id="matBimestres"></div>
             </div>
 
-            <button onclick="guardarIE()" style="width: 100%; padding: 1rem; font-size: 1.1rem;">💾 Guardar IE</button>
+            <button onclick="guardarIE()" style="width: 100%; padding: 1.2rem; font-size: 1.1rem;">💾 Guardar IE</button>
         </div>
 
         <!-- TAB DASHBOARD -->
         <div id="dashboard" class="tab-content">
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+            <div class="metrics-grid" id="metricsContainer">
                 <div class="metric">
-                    <div class="metric-value" id="totalIE">0</div>
                     <div class="metric-label">IE Registradas</div>
+                    <div class="metric-value" id="totalIE">0</div>
                 </div>
                 <div class="metric">
-                    <div class="metric-value" id="totalTextos">0</div>
                     <div class="metric-label">Total Textos</div>
+                    <div class="metric-value" id="totalTextos">0</div>
                 </div>
                 <div class="metric">
+                    <div class="metric-label">📖 Integración Comunicación</div>
                     <div class="metric-value" id="promCom">0%</div>
-                    <div class="metric-label">📖 Com Integración</div>
                 </div>
                 <div class="metric">
+                    <div class="metric-label">🔢 Integración Matemática</div>
                     <div class="metric-value" id="promMat">0%</div>
-                    <div class="metric-label">🔢 Mat Integración</div>
                 </div>
             </div>
 
-            <!-- SECCIÓN DE EXPORTACIÓN -->
             <div class="export-section">
                 <div class="export-title">📥 EXPORTAR DATOS</div>
-                <p style="margin-bottom: 1rem; color: #1b5e20;">Descarga los datos en formato Excel para compartir con UGEL SULLANA</p>
-                <button class="export" onclick="exportarExcelConsolidado()">📊 Descargar Excel Consolidado (Todas las IE)</button>
-                <button class="export" onclick="exportarExcelPorIE()">📋 Descargar Excel por IE (Separados)</button>
-                <button class="export" onclick="exportarCSV()">📄 Descargar CSV para SIMON</button>
+                <p style="margin-bottom: 1rem; color: #1b5e20; font-size: 0.95rem;">Descarga los datos en formato Excel para compartir con UGEL SULLANA</p>
+                <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                    <button class="export" onclick="exportarExcelConsolidado()">📊 Excel Consolidado</button>
+                    <button class="export" onclick="exportarExcelPorIE()">📋 Excel por IE</button>
+                    <button class="export" onclick="exportarCSV()">📄 CSV para SIMON</button>
+                </div>
             </div>
 
             <div class="section">
@@ -132,17 +149,21 @@
                     <thead>
                         <tr>
                             <th>Institución</th>
+                            <th>Código</th>
+                            <th>Director</th>
                             <th>Textos</th>
                             <th>📖 Com %</th>
                             <th>🔢 Mat %</th>
-                            <th>Descargar</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaIE"></tbody>
+                    <tbody id="tablaIE">
+                        <tr><td colspan="7" style="text-align: center; color: #999;">Registra una IE para verla aquí</td></tr>
+                    </tbody>
                 </table>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem;">
                 <div class="chart-container">
                     <canvas id="graficoBarras"></canvas>
                 </div>
@@ -157,27 +178,54 @@
     </div>
 
     <script>
-        let ieData = JSON.parse(localStorage.getItem('bancoLibroV7')) || [];
+        // CARGAR DATOS CON COMPATIBILIDAD HACIA ATRÁS
+        let ieData = cargarDatos();
         let charts = {};
+
+        function cargarDatos() {
+            let datos = localStorage.getItem('bancoLibroV7_1') || localStorage.getItem('bancoLibroV7') || localStorage.getItem('bancoLibroV6Simple');
+            if (datos) {
+                try {
+                    return JSON.parse(datos);
+                } catch(e) {
+                    console.error('Error al cargar datos:', e);
+                    return [];
+                }
+            }
+            return [];
+        }
+
+        function guardarDatos() {
+            localStorage.setItem('bancoLibroV7_1', JSON.stringify(ieData));
+        }
+
+        function mostrarMensaje(tipo, texto) {
+            const msgEl = tipo === 'success' ? document.getElementById('successMsg') : document.getElementById('errorMsg');
+            msgEl.textContent = texto;
+            msgEl.style.display = 'block';
+            setTimeout(() => { msgEl.style.display = 'none'; }, 3000);
+        }
 
         function showTab(tab) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
             event.target.classList.add('active');
-            if (tab === 'dashboard') actualizarDashboard();
+            if (tab === 'dashboard') {
+                setTimeout(actualizarDashboard, 100);
+            }
         }
 
         function crearInputEstado(area, grado) {
             return `
-                <div style="background:#f9f9f9; padding:1rem; border-radius:6px; margin-bottom:1rem;">
-                    <h4>Grado ${grado}°</h4>
+                <div class="grade-section">
+                    <div class="grade-title">Grado ${grado}°</div>
                     <div class="grid">
-                        <div><label>Total</label><input type="number" id="${area}_${grado}_total" value="0"></div>
-                        <div><label>✅ Bueno</label><input type="number" id="${area}_${grado}_bueno" value="0"></div>
-                        <div><label>⚠️ Regular</label><input type="number" id="${area}_${grado}_regular" value="0"></div>
-                        <div><label>❌ Malo</label><input type="number" id="${area}_${grado}_malo" value="0"></div>
-                        <div><label>🚫 No Recup</label><input type="number" id="${area}_${grado}_noRecup" value="0"></div>
+                        <div class="form-group"><label>Total</label><input type="number" id="${area}_${grado}_total" value="0" min="0"></div>
+                        <div class="form-group"><label>✅ Bueno</label><input type="number" id="${area}_${grado}_bueno" value="0" min="0"></div>
+                        <div class="form-group"><label>⚠️ Regular</label><input type="number" id="${area}_${grado}_regular" value="0" min="0"></div>
+                        <div class="form-group"><label>❌ Malo</label><input type="number" id="${area}_${grado}_malo" value="0" min="0"></div>
+                        <div class="form-group"><label>🚫 No Recup</label><input type="number" id="${area}_${grado}_noRecup" value="0" min="0"></div>
                     </div>
                 </div>
             `;
@@ -185,13 +233,13 @@
 
         function crearInputBimestres(area, grado) {
             return `
-                <div style="background:#f9f9f9; padding:1rem; border-radius:6px; margin-bottom:1rem;">
-                    <h4>Grado ${grado}°</h4>
+                <div class="grade-section">
+                    <div class="grade-title">Grado ${grado}°</div>
                     <div class="grid">
-                        <div><label>Bim I %</label><input type="number" id="${area}_${grado}_bim1" value="0" max="100"></div>
-                        <div><label>Bim II %</label><input type="number" id="${area}_${grado}_bim2" value="0" max="100"></div>
-                        <div><label>Bim III %</label><input type="number" id="${area}_${grado}_bim3" value="0" max="100"></div>
-                        <div><label>Bim IV %</label><input type="number" id="${area}_${grado}_bim4" value="0" max="100"></div>
+                        <div class="form-group"><label>Bim I %</label><input type="number" id="${area}_${grado}_bim1" value="0" min="0" max="100"></div>
+                        <div class="form-group"><label>Bim II %</label><input type="number" id="${area}_${grado}_bim2" value="0" min="0" max="100"></div>
+                        <div class="form-group"><label>Bim III %</label><input type="number" id="${area}_${grado}_bim3" value="0" min="0" max="100"></div>
+                        <div class="form-group"><label>Bim IV %</label><input type="number" id="${area}_${grado}_bim4" value="0" min="0" max="100"></div>
                     </div>
                 </div>
             `;
@@ -203,42 +251,49 @@
         document.getElementById('matBimestres').innerHTML = [1,2,3,4,5].map(g => crearInputBimestres('mat', g)).join('');
 
         function guardarIE() {
+            const nombreIE = document.getElementById('nombreIE').value.trim();
+            const codigoModular = document.getElementById('codigoModular').value.trim();
+
+            if (!nombreIE || !codigoModular) {
+                mostrarMensaje('error', '⚠️ Completa Nombre IE y Código Modular');
+                return;
+            }
+
             const ie = {
-                nombreIE: document.getElementById('nombreIE').value,
-                codigoModular: document.getElementById('codigoModular').value,
+                id: Date.now(),
+                nombreIE, codigoModular,
                 director: document.getElementById('director').value,
                 telefono: document.getElementById('telefono').value,
-                comEstado: {}, matEstado: {}, comBim: {}, matBim: {}
+                comEstado: {}, matEstado: {}, comBim: {}, matBim: {},
+                fechaRegistro: new Date().toLocaleDateString('es-PE')
             };
-
-            if (!ie.nombreIE) return alert('⚠️ Completa nombre IE');
 
             for (let g = 1; g <= 5; g++) {
                 ie.comEstado[g] = {
-                    total: +document.getElementById(`com_${g}_total`).value,
-                    bueno: +document.getElementById(`com_${g}_bueno`).value,
-                    regular: +document.getElementById(`com_${g}_regular`).value,
-                    malo: +document.getElementById(`com_${g}_malo`).value,
-                    noRecup: +document.getElementById(`com_${g}_noRecup`).value
+                    total: +document.getElementById(`com_${g}_total`).value || 0,
+                    bueno: +document.getElementById(`com_${g}_bueno`).value || 0,
+                    regular: +document.getElementById(`com_${g}_regular`).value || 0,
+                    malo: +document.getElementById(`com_${g}_malo`).value || 0,
+                    noRecup: +document.getElementById(`com_${g}_noRecup`).value || 0
                 };
                 ie.matEstado[g] = {
-                    total: +document.getElementById(`mat_${g}_total`).value,
-                    bueno: +document.getElementById(`mat_${g}_bueno`).value,
-                    regular: +document.getElementById(`mat_${g}_regular`).value,
-                    malo: +document.getElementById(`mat_${g}_malo`).value,
-                    noRecup: +document.getElementById(`mat_${g}_noRecup`).value
+                    total: +document.getElementById(`mat_${g}_total`).value || 0,
+                    bueno: +document.getElementById(`mat_${g}_bueno`).value || 0,
+                    regular: +document.getElementById(`mat_${g}_regular`).value || 0,
+                    malo: +document.getElementById(`mat_${g}_malo`).value || 0,
+                    noRecup: +document.getElementById(`mat_${g}_noRecup`).value || 0
                 };
                 ie.comBim[g] = {
-                    I: +document.getElementById(`com_${g}_bim1`).value,
-                    II: +document.getElementById(`com_${g}_bim2`).value,
-                    III: +document.getElementById(`com_${g}_bim3`).value,
-                    IV: +document.getElementById(`com_${g}_bim4`).value
+                    I: +document.getElementById(`com_${g}_bim1`).value || 0,
+                    II: +document.getElementById(`com_${g}_bim2`).value || 0,
+                    III: +document.getElementById(`com_${g}_bim3`).value || 0,
+                    IV: +document.getElementById(`com_${g}_bim4`).value || 0
                 };
                 ie.matBim[g] = {
-                    I: +document.getElementById(`mat_${g}_bim1`).value,
-                    II: +document.getElementById(`mat_${g}_bim2`).value,
-                    III: +document.getElementById(`mat_${g}_bim3`).value,
-                    IV: +document.getElementById(`mat_${g}_bim4`).value
+                    I: +document.getElementById(`mat_${g}_bim1`).value || 0,
+                    II: +document.getElementById(`mat_${g}_bim2`).value || 0,
+                    III: +document.getElementById(`mat_${g}_bim3`).value || 0,
+                    IV: +document.getElementById(`mat_${g}_bim4`).value || 0
                 };
             }
 
@@ -247,118 +302,24 @@
             ie.intMat = Math.round(Object.values(ie.matBim).reduce((s, g) => s + Object.values(g).reduce((a, b) => a + b), 0) / 20);
 
             ieData.push(ie);
-            localStorage.setItem('bancoLibroV7', JSON.stringify(ieData));
-            alert('✅ IE Guardada');
-            location.reload();
-        }
-
-        // EXPORTACIÓN A EXCEL - OPCIÓN 1: CONSOLIDADO
-        function exportarExcelConsolidado() {
-            const wb = XLSX.utils.book_new();
+            guardarDatos();
+            mostrarMensaje('success', '✅ IE Guardada: ' + nombreIE);
             
-            // Hoja 1: Resumen
-            const resumen = [
-                ['UGEL SULLANA - BANCO DEL LIBRO 2026', '', '', '', ''],
-                ['REPORTE CONSOLIDADO DE INSTITUCIONES EDUCATIVAS', '', '', '', ''],
-                ['Fecha de Reporte:', new Date().toLocaleDateString('es-PE'), '', '', ''],
-                ['', '', '', '', ''],
-                ['INDICADORES GENERALES', '', '', '', ''],
-                ['Total IE Registradas:', ieData.length, '', '', ''],
-                ['Total Textos en el Sistema:', ieData.reduce((s, ie) => s + ie.totalTextos, 0), '', '', ''],
-                ['% Promedio Integración Comunicación:', Math.round(ieData.reduce((s, ie) => s + ie.intCom, 0) / (ieData.length || 1)) + '%', '', '', ''],
-                ['% Promedio Integración Matemática:', Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1)) + '%', '', '', ''],
-            ];
-            const wsResumen = XLSX.utils.aoa_to_sheet(resumen);
-            XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
-
-            // Hoja 2: Detalle por IE
-            const detalle = [
-                ['INSTITUCIÓN EDUCATIVA', 'CÓDIGO MODULAR', 'DIRECTOR/A', 'TELÉFONO', 'TOTAL TEXTOS', '% COM', '% MAT']
-            ];
-            ieData.forEach(ie => {
-                detalle.push([
-                    ie.nombreIE,
-                    ie.codigoModular,
-                    ie.director,
-                    ie.telefono,
-                    ie.totalTextos,
-                    ie.intCom + '%',
-                    ie.intMat + '%'
-                ]);
-            });
-            const wsDetalle = XLSX.utils.aoa_to_sheet(detalle);
-            XLSX.utils.book_append_sheet(wb, wsDetalle, 'Detalle IE');
-
-            XLSX.writeFile(wb, `Banco_Libro_2026_Consolidado_${new Date().toISOString().slice(0,10)}.xlsx`);
-            alert('✅ Descargado: Reporte Consolidado');
+            document.getElementById('nombreIE').value = '';
+            document.getElementById('codigoModular').value = '';
+            document.getElementById('director').value = '';
+            document.getElementById('telefono').value = '';
+            
+            setTimeout(() => showTab('dashboard'), 500);
         }
 
-        // EXPORTACIÓN A EXCEL - OPCIÓN 2: POR IE
-        function exportarExcelPorIE() {
-            ieData.forEach(ie => {
-                const wb = XLSX.utils.book_new();
-                
-                const datos = [
-                    ['UGEL SULLANA - BANCO DEL LIBRO 2026', '', '', ''],
-                    ['REGISTRO DE INSTITUCIÓN EDUCATIVA', '', '', ''],
-                    ['', '', '', ''],
-                    ['Institución:', ie.nombreIE, '', ''],
-                    ['Código Modular:', ie.codigoModular, '', ''],
-                    ['Director/a:', ie.director, '', ''],
-                    ['Teléfono:', ie.telefono, '', ''],
-                    ['', '', '', ''],
-                    ['COMUNICACIÓN - ESTADO DE CONSERVACIÓN', '', '', ''],
-                    ['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable'],
-                ];
-                for (let g = 1; g <= 5; g++) {
-                    const d = ie.comEstado[g];
-                    datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
-                }
-                
-                datos.push(['', '', '', '', '', '']);
-                datos.push(['COMUNICACIÓN - USO POR BIMESTRE', '', '', '']);
-                datos.push(['Grado', 'Bim I %', 'Bim II %', 'Bim III %', 'Bim IV %']);
-                for (let g = 1; g <= 5; g++) {
-                    const b = ie.comBim[g];
-                    datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
-                }
-
-                datos.push(['', '', '', '', '', '']);
-                datos.push(['MATEMÁTICA - ESTADO DE CONSERVACIÓN', '', '', '']);
-                datos.push(['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable']);
-                for (let g = 1; g <= 5; g++) {
-                    const d = ie.matEstado[g];
-                    datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
-                }
-
-                datos.push(['', '', '', '', '', '']);
-                datos.push(['MATEMÁTICA - USO POR BIMESTRE', '', '', '']);
-                datos.push(['Grado', 'Bim I %', 'Bim II %', 'Bim III %', 'Bim IV %']);
-                for (let g = 1; g <= 5; g++) {
-                    const b = ie.matBim[g];
-                    datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
-                }
-
-                const ws = XLSX.utils.aoa_to_sheet(datos);
-                XLSX.utils.book_append_sheet(wb, ws, ie.nombreIE.substring(0, 31));
-                XLSX.writeFile(wb, `${ie.nombreIE}_BancoLibro2026.xlsx`);
-            });
-            alert('✅ Descargados: ' + ieData.length + ' archivos Excel');
-        }
-
-        // EXPORTACIÓN CSV
-        function exportarCSV() {
-            let csv = 'INSTITUCIÓN,CÓDIGO,DIRECTOR,TELÉFONO,TEXTOS,COM%,MAT%\n';
-            ieData.forEach(ie => {
-                csv += `"${ie.nombreIE}","${ie.codigoModular}","${ie.director}","${ie.telefono}",${ie.totalTextos},${ie.intCom},${ie.intMat}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Banco_Libro_2026_SIMON_${new Date().toISOString().slice(0,10)}.csv`;
-            a.click();
-            alert('✅ Descargado: Archivo CSV para SIMON');
+        function eliminarIE(id) {
+            if (confirm('¿Confirmar eliminación?')) {
+                ieData = ieData.filter(ie => ie.id !== id);
+                guardarDatos();
+                mostrarMensaje('success', '✅ IE eliminada');
+                actualizarDashboard();
+            }
         }
 
         function actualizarDashboard() {
@@ -368,18 +329,29 @@
             document.getElementById('promMat').textContent = Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1)) + '%';
 
             let html = '';
-            ieData.forEach((ie, idx) => {
-                html += `<tr>
-                    <td>${ie.nombreIE}</td>
-                    <td>${ie.totalTextos}</td>
-                    <td>${ie.intCom}%</td>
-                    <td>${ie.intMat}%</td>
-                    <td><button onclick="descargarExcelUnico(${idx})" style="padding:0.5rem 1rem; font-size:0.9rem;">📥 Descargar</button></td>
-                </tr>`;
-            });
+            if (ieData.length === 0) {
+                html = '<tr><td colspan="7" style="text-align: center; color: #999; padding: 2rem;">No hay IE registradas</td></tr>';
+            } else {
+                ieData.forEach(ie => {
+                    html += `<tr>
+                        <td><strong>${ie.nombreIE}</strong></td>
+                        <td>${ie.codigoModular}</td>
+                        <td>${ie.director || '-'}</td>
+                        <td>${ie.totalTextos}</td>
+                        <td>${ie.intCom}%</td>
+                        <td>${ie.intMat}%</td>
+                        <td><button class="delete" onclick="eliminarIE(${ie.id})">🗑️ Borrar</button></td>
+                    </tr>`;
+                });
+            }
             document.getElementById('tablaIE').innerHTML = html;
 
-            // GRÁFICO 1
+            if (ieData.length > 0) {
+                crearGraficos();
+            }
+        }
+
+        function crearGraficos() {
             const dataCon = {bueno: 0, regular: 0, malo: 0, noRecup: 0};
             ieData.forEach(ie => {
                 Object.values(ie.comEstado).forEach(g => {
@@ -389,25 +361,26 @@
                     dataCon.bueno += g.bueno; dataCon.regular += g.regular; dataCon.malo += g.malo; dataCon.noRecup += g.noRecup;
                 });
             });
+
             if (charts.barras) charts.barras.destroy();
             charts.barras = new Chart(document.getElementById('graficoBarras'), {
                 type: 'bar',
                 data: {
                     labels: ['✅ Bueno', '⚠️ Regular', '❌ Malo', '🚫 No Recup'],
                     datasets: [{label: 'Estado de Conservación', data: [dataCon.bueno, dataCon.regular, dataCon.malo, dataCon.noRecup], backgroundColor: ['#4CAF50', '#FFC107', '#FF5722', '#9C27B0']}]
-                }
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
 
-            // GRÁFICO 2
             const promCom = Math.round(ieData.reduce((s, ie) => s + ie.intCom, 0) / (ieData.length || 1));
             const promMat = Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1));
             if (charts.circular) charts.circular.destroy();
             charts.circular = new Chart(document.getElementById('graficoCircular'), {
                 type: 'doughnut',
-                data: {labels: ['📖 Comunicación', '🔢 Matemática'], datasets: [{data: [promCom, promMat], backgroundColor: ['#2196F3', '#FF5722']}]}
+                data: {labels: ['📖 Comunicación', '🔢 Matemática'], datasets: [{data: [promCom, promMat], backgroundColor: ['#2196F3', '#FF5722']}]},
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
 
-            // GRÁFICO 3
             const bimData = {I: 0, II: 0, III: 0, IV: 0};
             ieData.forEach(ie => {
                 Object.values(ie.comBim).forEach(g => {bimData.I += g.I; bimData.II += g.II; bimData.III += g.III; bimData.IV += g.IV;});
@@ -416,51 +389,92 @@
             if (charts.lineas) charts.lineas.destroy();
             charts.lineas = new Chart(document.getElementById('graficoLineas'), {
                 type: 'line',
-                data: {labels: ['Bim I', 'Bim II', 'Bim III', 'Bim IV'], datasets: [{label: 'Uso en Planificación %', data: [bimData.I, bimData.II, bimData.III, bimData.IV], borderColor: '#1e40af', backgroundColor: 'rgba(30, 64, 175, 0.1)', tension: 0.4}]}
+                data: {labels: ['Bim I', 'Bim II', 'Bim III', 'Bim IV'], datasets: [{label: 'Uso en Planificación %', data: [bimData.I, bimData.II, bimData.III, bimData.IV], borderColor: '#1e40af', backgroundColor: 'rgba(30, 64, 175, 0.1)', tension: 0.4}]},
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
         }
 
-        function descargarExcelUnico(idx) {
-            const ie = ieData[idx];
+        function exportarExcelConsolidado() {
             const wb = XLSX.utils.book_new();
-            const datos = [
+            const resumen = [
                 ['UGEL SULLANA - BANCO DEL LIBRO 2026'],
-                ['INSTITUCIÓN: ' + ie.nombreIE],
-                ['CÓDIGO: ' + ie.codigoModular],
-                ['DIRECTOR: ' + ie.director],
-                ['TELÉFONO: ' + ie.telefono],
+                ['REPORTE CONSOLIDADO'],
+                ['Fecha:', new Date().toLocaleDateString('es-PE')],
                 [''],
-                ['COMUNICACIÓN - ESTADO', '', '', '', '', ''],
-                ['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable'],
+                ['Total IE:', ieData.length],
+                ['Total Textos:', ieData.reduce((s, ie) => s + ie.totalTextos, 0)],
+                ['% Promedio Comunicación:', Math.round(ieData.reduce((s, ie) => s + ie.intCom, 0) / (ieData.length || 1)) + '%'],
+                ['% Promedio Matemática:', Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1)) + '%'],
             ];
-            for (let g = 1; g <= 5; g++) {
-                const d = ie.comEstado[g];
-                datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
+            const wsResumen = XLSX.utils.aoa_to_sheet(resumen);
+            XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
+
+            const detalle = [['INSTITUCIÓN', 'CÓDIGO', 'DIRECTOR', 'TEXTOS', '% COM', '% MAT']];
+            ieData.forEach(ie => detalle.push([ie.nombreIE, ie.codigoModular, ie.director || '', ie.totalTextos, ie.intCom + '%', ie.intMat + '%']));
+            const wsDetalle = XLSX.utils.aoa_to_sheet(detalle);
+            XLSX.utils.book_append_sheet(wb, wsDetalle, 'Detalle');
+
+            XLSX.writeFile(wb, `Banco_Libro_Consolidado_${new Date().toISOString().slice(0,10)}.xlsx`);
+            mostrarMensaje('success', '✅ Descargado: Excel Consolidado');
+        }
+
+        function exportarExcelPorIE() {
+            if (ieData.length === 0) {
+                mostrarMensaje('error', '⚠️ No hay IE para descargar');
+                return;
             }
-            datos.push(['']);
-            datos.push(['COMUNICACIÓN - BIMESTRES', '', '', '', '']);
-            datos.push(['Grado', 'I', 'II', 'III', 'IV']);
-            for (let g = 1; g <= 5; g++) {
-                const b = ie.comBim[g];
-                datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
+            ieData.forEach(ie => {
+                const wb = XLSX.utils.book_new();
+                const datos = [[ie.nombreIE], ['Código:', ie.codigoModular], ['Director:', ie.director || ''], ['Teléfono:', ie.telefono || ''], ['']];
+                datos.push(['COMUNICACIÓN - ESTADO']);
+                datos.push(['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recup']);
+                for (let g = 1; g <= 5; g++) {
+                    const d = ie.comEstado[g];
+                    datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
+                }
+                datos.push(['']);
+                datos.push(['COMUNICACIÓN - BIMESTRES']);
+                datos.push(['Grado', 'I', 'II', 'III', 'IV']);
+                for (let g = 1; g <= 5; g++) {
+                    const b = ie.comBim[g];
+                    datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
+                }
+                datos.push(['']);
+                datos.push(['MATEMÁTICA - ESTADO']);
+                datos.push(['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recup']);
+                for (let g = 1; g <= 5; g++) {
+                    const d = ie.matEstado[g];
+                    datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
+                }
+                datos.push(['']);
+                datos.push(['MATEMÁTICA - BIMESTRES']);
+                datos.push(['Grado', 'I', 'II', 'III', 'IV']);
+                for (let g = 1; g <= 5; g++) {
+                    const b = ie.matBim[g];
+                    datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
+                }
+                const ws = XLSX.utils.aoa_to_sheet(datos);
+                XLSX.utils.book_append_sheet(wb, ws, 'IE');
+                XLSX.writeFile(wb, `${ie.nombreIE}_BancoLibro.xlsx`);
+            });
+            mostrarMensaje('success', '✅ Descargados: ' + ieData.length + ' archivos');
+        }
+
+        function exportarCSV() {
+            if (ieData.length === 0) {
+                mostrarMensaje('error', '⚠️ No hay IE para descargar');
+                return;
             }
-            datos.push(['']);
-            datos.push(['MATEMÁTICA - ESTADO', '', '', '', '', '']);
-            datos.push(['Grado', 'Total', 'Bueno', 'Regular', 'Malo', 'No Recuperable']);
-            for (let g = 1; g <= 5; g++) {
-                const d = ie.matEstado[g];
-                datos.push([`${g}°`, d.total, d.bueno, d.regular, d.malo, d.noRecup]);
-            }
-            datos.push(['']);
-            datos.push(['MATEMÁTICA - BIMESTRES', '', '', '', '']);
-            datos.push(['Grado', 'I', 'II', 'III', 'IV']);
-            for (let g = 1; g <= 5; g++) {
-                const b = ie.matBim[g];
-                datos.push([`${g}°`, b.I, b.II, b.III, b.IV]);
-            }
-            const ws = XLSX.utils.aoa_to_sheet(datos);
-            XLSX.utils.book_append_sheet(wb, ws, 'Datos IE');
-            XLSX.writeFile(wb, `${ie.nombreIE}_BancoLibro.xlsx`);
+            let csv = 'INSTITUCIÓN,CÓDIGO,DIRECTOR,TELÉFONO,TEXTOS,COM%,MAT%\n';
+            ieData.forEach(ie => {
+                csv += `"${ie.nombreIE}","${ie.codigoModular}","${ie.director || ''}","${ie.telefono || ''}",${ie.totalTextos},${ie.intCom},${ie.intMat}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Banco_Libro_SIMON_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            mostrarMensaje('success', '✅ Descargado: CSV para SIMON');
         }
     </script>
 </body>
