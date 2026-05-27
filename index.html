@@ -9,9 +9,14 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
-        .header { background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); color: white; padding: 2rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-        .header p { font-size: 1rem; opacity: 0.9; }
+        .header { background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); color: white; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; }
+        .header-escudo { width: 80px; height: 80px; }
+        .header-escudo img { width: 100%; height: 100%; object-fit: contain; }
+        .header-text { flex: 1; }
+        .header-text h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+        .header-text p { font-size: 0.95rem; opacity: 0.9; }
+        .header-autor { background: white; color: #1e3a8a; padding: 0.8rem 1.5rem; border-radius: 6px; font-weight: 600; font-size: 0.95rem; }
         .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
         .tabs { display: flex; gap: 0.5rem; margin: 2rem 0; flex-wrap: wrap; }
         .tab-btn { padding: 0.9rem 1.8rem; background: white; border: 2px solid #ddd; cursor: pointer; border-radius: 8px; font-weight: 600; transition: all 0.3s; }
@@ -52,8 +57,18 @@
 </head>
 <body>
     <div class="header">
-        <h1>🏫 UGEL SULLANA - Banco del Libro 2026</h1>
-        <p>Sistema de Gestión de Textos Escolares v7.1 - Con Exportación Integrada</p>
+        <div class="header-content">
+            <div class="header-escudo">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9Y" alt="Escudo UGEL">
+            </div>
+            <div class="header-text">
+                <h1>🏫 UGEL SULLANA - Banco del Libro 2026</h1>
+                <p>Sistema de Gestión de Textos Escolares v7.2 - Con Exportación Integrada</p>
+                <div class="header-autor">
+                    👨‍💼 Dr. Augusto Segundo Hidalgo Córdova - Responsable de Gestión de Recursos Educativos
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -183,7 +198,7 @@
         let charts = {};
 
         function cargarDatos() {
-            let datos = localStorage.getItem('bancoLibroV7_1') || localStorage.getItem('bancoLibroV7') || localStorage.getItem('bancoLibroV6Simple');
+            let datos = localStorage.getItem('bancoLibroV7_2') || localStorage.getItem('bancoLibroV7_1') || localStorage.getItem('bancoLibroV7') || localStorage.getItem('bancoLibroV6Simple');
             if (datos) {
                 try {
                     return JSON.parse(datos);
@@ -196,7 +211,7 @@
         }
 
         function guardarDatos() {
-            localStorage.setItem('bancoLibroV7_1', JSON.stringify(ieData));
+            localStorage.setItem('bancoLibroV7_2', JSON.stringify(ieData));
         }
 
         function mostrarMensaje(tipo, texto) {
@@ -476,6 +491,9 @@
             link.click();
             mostrarMensaje('success', '✅ Descargado: CSV para SIMON');
         }
+
+        // Inicializar dashboard
+        actualizarDashboard();
     </script>
 </body>
 </html>
