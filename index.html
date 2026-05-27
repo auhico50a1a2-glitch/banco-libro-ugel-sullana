@@ -4,346 +4,314 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco del Libro - UGEL Sullana 2026</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/react.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/react-dom.development.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; }
-        .header { background: white; padding: 1.5rem; border-bottom: 3px solid #1e40af; display: flex; align-items: center; justify-content: space-between; }
-        .header-left { display: flex; align-items: center; gap: 1rem; }
-        .escudo { width: 56px; height: 56px; border-radius: 8px; }
-        .header-title { font-size: 1.4rem; font-weight: 700; color: #1e40af; }
-        .header-subtitle { font-size: 0.85rem; color: #666; }
-        .header-right { background: #1e40af; color: #fbbf24; padding: 0.75rem 1.2rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; font-weight: 600; }
-        .container { max-width: 1800px; margin: 2rem auto; padding: 0 1rem; }
-        .nav-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .nav-btn { padding: 0.8rem 1.5rem; border: 2px solid #ddd; background: white; cursor: pointer; border-radius: 6px; font-weight: 600; transition: all 0.3s; }
-        .nav-btn.active { background: #1e40af; color: white; border-color: #1e40af; }
-        .form-section { background: white; padding: 2rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; color: #333; }
-        input, select { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; }
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
-        .grade-container { background: #f9fafb; padding: 1.5rem; border-radius: 6px; margin-bottom: 1.5rem; border-left: 5px solid #1e40af; }
-        .grade-title { font-weight: 700; margin-bottom: 1rem; color: #1e40af; font-size: 1.05rem; }
-        .area-title { font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem; color: #1e40af; padding-bottom: 0.75rem; border-bottom: 3px solid #1e40af; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .metric-card { background: white; padding: 1.5rem; border-radius: 8px; border-left: 5px solid #1e40af; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; }
-        .metric-value { font-size: 2.5rem; font-weight: 700; color: #1e40af; margin-bottom: 0.5rem; }
-        .metric-label { font-size: 0.9rem; color: #666; font-weight: 600; }
-        .table-wrapper { overflow-x: auto; background: white; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #1e40af; color: white; padding: 1rem; text-align: left; font-weight: 700; }
-        td { padding: 1rem; border-bottom: 1px solid #eee; }
-        tr:hover { background: #f9fafb; }
-        .btn { padding: 0.8rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; transition: all 0.3s; }
-        .btn-primary { background: #1e40af; color: white; }
-        .btn-primary:hover { background: #162d7a; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30,64,175,0.3); }
-        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
-        .chart-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: relative; height: 400px; }
-        .chart-title { font-weight: 700; margin-bottom: 1.5rem; font-size: 1.1rem; color: #1e40af; }
-        .report-section { background: white; padding: 2rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #1e40af; color: white; padding: 1.5rem; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+        .tabs { display: flex; gap: 1rem; margin: 2rem 0; }
+        .tab-btn { padding: 0.8rem 1.5rem; background: white; border: 2px solid #1e40af; cursor: pointer; border-radius: 6px; font-weight: bold; }
+        .tab-btn.active { background: #1e40af; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-group { margin: 1rem 0; }
+        label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
+        input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+        .section { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #1e40af; }
+        .section-title { font-size: 1.2rem; font-weight: bold; color: #1e40af; margin-bottom: 1rem; }
+        button { padding: 0.8rem 1.5rem; background: #1e40af; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #162d7a; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th { background: #1e40af; color: white; padding: 0.8rem; text-align: left; }
+        td { padding: 0.8rem; border-bottom: 1px solid #ddd; }
+        .metric { background: white; padding: 1.5rem; text-align: center; border-radius: 8px; }
+        .metric-value { font-size: 2.5rem; font-weight: bold; color: #1e40af; }
+        .metric-label { color: #666; margin-top: 0.5rem; }
+        .chart-container { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; position: relative; height: 350px; }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="header">
+        <h1>🏫 UGEL SULLANA - Banco del Libro 2026</h1>
+        <p>Sistema de Gestión de Textos Escolares v6.0</p>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('director')">📋 Directoria IE</button>
+            <button class="tab-btn" onclick="showTab('dashboard')">📊 Dashboard UGEL</button>
+        </div>
+
+        <!-- TAB DIRECTOR -->
+        <div id="director" class="tab-content active">
+            <div class="section">
+                <div class="section-title">📝 Registrar Institución Educativa</div>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Nombre IE</label>
+                        <input type="text" id="nombreIE" placeholder="IEP Rosa Cardo de Guarderas">
+                    </div>
+                    <div class="form-group">
+                        <label>Código Modular</label>
+                        <input type="text" id="codigoModular">
+                    </div>
+                    <div class="form-group">
+                        <label>Director/a</label>
+                        <input type="text" id="director">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" id="telefono">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📖 COMUNICACIÓN - ESTADO POR GRADO</div>
+                <div id="comEstado"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📖 COMUNICACIÓN - USO POR BIMESTRE (%)</div>
+                <div id="comBimestres"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🔢 MATEMÁTICA - ESTADO POR GRADO</div>
+                <div id="matEstado"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🔢 MATEMÁTICA - USO POR BIMESTRE (%)</div>
+                <div id="matBimestres"></div>
+            </div>
+
+            <button onclick="guardarIE()" style="width: 100%; padding: 1rem; font-size: 1.1rem;">💾 Guardar IE</button>
+        </div>
+
+        <!-- TAB DASHBOARD -->
+        <div id="dashboard" class="tab-content">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div class="metric">
+                    <div class="metric-value" id="totalIE">0</div>
+                    <div class="metric-label">IE Registradas</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="totalTextos">0</div>
+                    <div class="metric-label">Total Textos</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="promCom">0%</div>
+                    <div class="metric-label">📖 Com Integración</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="promMat">0%</div>
+                    <div class="metric-label">🔢 Mat Integración</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Institución</th>
+                            <th>Textos</th>
+                            <th>📖 Com %</th>
+                            <th>🔢 Mat %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaIE"></tbody>
+                </table>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 1.5rem;">
+                <div class="chart-container">
+                    <canvas id="graficoBarras"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="graficoCircular"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="graficoLineas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const { useState, useEffect, useRef } = React;
+        let ieData = JSON.parse(localStorage.getItem('bancoLibroV6Simple')) || [];
+        let charts = {};
 
-        function ChartComponent({ type, data, title }) {
-            const canvasRef = useRef(null);
-            const chartRef = useRef(null);
-
-            useEffect(() => {
-                if (canvasRef.current && data) {
-                    if (chartRef.current) chartRef.current.destroy();
-                    const ctx = canvasRef.current.getContext('2d');
-                    chartRef.current = new Chart(ctx, {
-                        type: type,
-                        data: data,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { position: 'bottom' } }
-                        }
-                    });
-                }
-                return () => { if (chartRef.current) chartRef.current.destroy(); };
-            }, [data, type]);
-
-            return React.createElement('div', { className: 'chart-container' },
-                React.createElement('div', { className: 'chart-title' }, title),
-                React.createElement('canvas', { ref: canvasRef })
-            );
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'dashboard') actualizarDashboard();
         }
 
-        function App() {
-            const [currentView, setCurrentView] = useState('director');
-            const [ieData, setIeData] = useState([]);
-            const [formData, setFormData] = useState({
-                nombreIE: '', codigoModular: '', director: '', telefono: '',
-                areas: {
-                    comunicacion: {
-                        grados: {
-                            1: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            2: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            3: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            4: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            5: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }
-                        }
-                    },
-                    matematica: {
-                        grados: {
-                            1: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            2: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            3: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            4: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } },
-                            5: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }
-                        }
-                    }
+        function crearInputEstado(area, grado) {
+            return `
+                <div style="background:#f9f9f9; padding:1rem; border-radius:6px; margin-bottom:1rem;">
+                    <h4>Grado ${grado}°</h4>
+                    <div class="grid">
+                        <div><label>Total</label><input type="number" id="${area}_${grado}_total" value="0"></div>
+                        <div><label>✅ Bueno</label><input type="number" id="${area}_${grado}_bueno" value="0"></div>
+                        <div><label>⚠️ Regular</label><input type="number" id="${area}_${grado}_regular" value="0"></div>
+                        <div><label>❌ Malo</label><input type="number" id="${area}_${grado}_malo" value="0"></div>
+                        <div><label>🚫 No Recup</label><input type="number" id="${area}_${grado}_noRecup" value="0"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function crearInputBimestres(area, grado) {
+            return `
+                <div style="background:#f9f9f9; padding:1rem; border-radius:6px; margin-bottom:1rem;">
+                    <h4>Grado ${grado}°</h4>
+                    <div class="grid">
+                        <div><label>Bim I %</label><input type="number" id="${area}_${grado}_bim1" value="0" max="100"></div>
+                        <div><label>Bim II %</label><input type="number" id="${area}_${grado}_bim2" value="0" max="100"></div>
+                        <div><label>Bim III %</label><input type="number" id="${area}_${grado}_bim3" value="0" max="100"></div>
+                        <div><label>Bim IV %</label><input type="number" id="${area}_${grado}_bim4" value="0" max="100"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Inicializar formularios
+        document.getElementById('comEstado').innerHTML = [1,2,3,4,5].map(g => crearInputEstado('com', g)).join('');
+        document.getElementById('matEstado').innerHTML = [1,2,3,4,5].map(g => crearInputEstado('mat', g)).join('');
+        document.getElementById('comBimestres').innerHTML = [1,2,3,4,5].map(g => crearInputBimestres('com', g)).join('');
+        document.getElementById('matBimestres').innerHTML = [1,2,3,4,5].map(g => crearInputBimestres('mat', g)).join('');
+
+        function guardarIE() {
+            const ie = {
+                nombreIE: document.getElementById('nombreIE').value,
+                codigoModular: document.getElementById('codigoModular').value,
+                director: document.getElementById('director').value,
+                telefono: document.getElementById('telefono').value,
+                comEstado: {}, matEstado: {}, comBim: {}, matBim: {}
+            };
+
+            if (!ie.nombreIE) return alert('⚠️ Completa nombre IE');
+
+            for (let g = 1; g <= 5; g++) {
+                ie.comEstado[g] = {
+                    total: +document.getElementById(`com_${g}_total`).value,
+                    bueno: +document.getElementById(`com_${g}_bueno`).value,
+                    regular: +document.getElementById(`com_${g}_regular`).value,
+                    malo: +document.getElementById(`com_${g}_malo`).value,
+                    noRecup: +document.getElementById(`com_${g}_noRecup`).value
+                };
+                ie.matEstado[g] = {
+                    total: +document.getElementById(`mat_${g}_total`).value,
+                    bueno: +document.getElementById(`mat_${g}_bueno`).value,
+                    regular: +document.getElementById(`mat_${g}_regular`).value,
+                    malo: +document.getElementById(`mat_${g}_malo`).value,
+                    noRecup: +document.getElementById(`mat_${g}_noRecup`).value
+                };
+                ie.comBim[g] = {
+                    I: +document.getElementById(`com_${g}_bim1`).value,
+                    II: +document.getElementById(`com_${g}_bim2`).value,
+                    III: +document.getElementById(`com_${g}_bim3`).value,
+                    IV: +document.getElementById(`com_${g}_bim4`).value
+                };
+                ie.matBim[g] = {
+                    I: +document.getElementById(`mat_${g}_bim1`).value,
+                    II: +document.getElementById(`mat_${g}_bim2`).value,
+                    III: +document.getElementById(`mat_${g}_bim3`).value,
+                    IV: +document.getElementById(`mat_${g}_bim4`).value
+                };
+            }
+
+            ie.totalTextos = Object.values(ie.comEstado).reduce((s, g) => s + g.total, 0) + Object.values(ie.matEstado).reduce((s, g) => s + g.total, 0);
+            ie.intCom = Math.round(Object.values(ie.comBim).reduce((s, g) => s + Object.values(g).reduce((a, b) => a + b), 0) / 20);
+            ie.intMat = Math.round(Object.values(ie.matBim).reduce((s, g) => s + Object.values(g).reduce((a, b) => a + b), 0) / 20);
+
+            ieData.push(ie);
+            localStorage.setItem('bancoLibroV6Simple', JSON.stringify(ieData));
+            alert('✅ IE Guardada');
+            location.reload();
+        }
+
+        function actualizarDashboard() {
+            document.getElementById('totalIE').textContent = ieData.length;
+            document.getElementById('totalTextos').textContent = ieData.reduce((s, ie) => s + ie.totalTextos, 0);
+            document.getElementById('promCom').textContent = Math.round(ieData.reduce((s, ie) => s + ie.intCom, 0) / (ieData.length || 1)) + '%';
+            document.getElementById('promMat').textContent = Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1)) + '%';
+
+            let html = '';
+            ieData.forEach(ie => {
+                html += `<tr><td>${ie.nombreIE}</td><td>${ie.totalTextos}</td><td>${ie.intCom}%</td><td>${ie.intMat}%</td></tr>`;
+            });
+            document.getElementById('tablaIE').innerHTML = html;
+
+            // GRÁFICO 1: BARRAS
+            const dataCon = {bueno: 0, regular: 0, malo: 0, noRecup: 0};
+            ieData.forEach(ie => {
+                Object.values(ie.comEstado).forEach(g => {
+                    dataCon.bueno += g.bueno; dataCon.regular += g.regular; dataCon.malo += g.malo; dataCon.noRecup += g.noRecup;
+                });
+                Object.values(ie.matEstado).forEach(g => {
+                    dataCon.bueno += g.bueno; dataCon.regular += g.regular; dataCon.malo += g.malo; dataCon.noRecup += g.noRecup;
+                });
+            });
+            if (charts.barras) charts.barras.destroy();
+            charts.barras = new Chart(document.getElementById('graficoBarras'), {
+                type: 'bar',
+                data: {
+                    labels: ['✅ Bueno', '⚠️ Regular', '❌ Malo', '🚫 No Recup'],
+                    datasets: [{
+                        label: 'Estado de Conservación',
+                        data: [dataCon.bueno, dataCon.regular, dataCon.malo, dataCon.noRecup],
+                        backgroundColor: ['#4CAF50', '#FFC107', '#FF5722', '#9C27B0']
+                    }]
                 }
             });
 
-            const escudoBase64 = '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';
-
-            useEffect(() => {
-                const stored = localStorage.getItem('bancoLibroV6Completo');
-                if (stored) {
-                    try {
-                        setIeData(JSON.parse(stored).filter(ie => ie.nombreIE?.trim()));
-                    } catch (e) { }
-                }
-            }, []);
-
-            useEffect(() => {
-                localStorage.setItem('bancoLibroV6Completo', JSON.stringify(ieData));
-            }, [ieData]);
-
-            const handleInputChange = (e) => {
-                setFormData({ ...formData, [e.target.name]: e.target.value });
-            };
-
-            const handleStateChange = (area, grado, field, value) => {
-                setFormData(prev => ({
-                    ...prev,
-                    areas: {
-                        ...prev.areas,
-                        [area]: {
-                            ...prev.areas[area],
-                            grados: {
-                                ...prev.areas[area].grados,
-                                [grado]: { ...prev.areas[area].grados[grado], [field]: parseInt(value) || 0 }
-                            }
-                        }
-                    }
-                }));
-            };
-
-            const handleBimestreChange = (area, grado, bimestre, value) => {
-                setFormData(prev => ({
-                    ...prev,
-                    areas: {
-                        ...prev.areas,
-                        [area]: {
-                            ...prev.areas[area],
-                            grados: {
-                                ...prev.areas[area].grados,
-                                [grado]: {
-                                    ...prev.areas[area].grados[grado],
-                                    bimestres: { ...prev.areas[area].grados[grado].bimestres, [bimestre]: parseInt(value) || 0 }
-                                }
-                            }
-                        }
-                    }
-                }));
-            };
-
-            const handleSave = () => {
-                if (!formData.nombreIE.trim()) return alert('⚠️ Completa nombre IE');
-                const totalTextos = Object.values(formData.areas).reduce((s, a) => s + Object.values(a.grados).reduce((t, g) => t + g.total, 0), 0);
-                const intCom = Math.round(Object.values(formData.areas.comunicacion.grados).reduce((s, g) => s + Object.values(g.bimestres).reduce((b, v) => b + v, 0), 0) / (Object.values(formData.areas.comunicacion.grados).filter(g => g.total > 0).length || 1));
-                const intMat = Math.round(Object.values(formData.areas.matematica.grados).reduce((s, g) => s + Object.values(g.bimestres).reduce((b, v) => b + v, 0), 0) / (Object.values(formData.areas.matematica.grados).filter(g => g.total > 0).length || 1));
-                setIeData([...ieData, { ...formData, totalTextos, intCom, intMat }]);
-                alert('✅ IE Registrada Exitosamente');
-                setFormData({ nombreIE: '', codigoModular: '', director: '', telefono: '', areas: { comunicacion: { grados: { 1: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 2: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 3: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 4: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 5: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } } } }, matematica: { grados: { 1: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 2: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 3: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 4: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } }, 5: { total: 0, bueno: 0, regular: 0, malo: 0, noRecuperado: 0, bimestres: { I: 0, II: 0, III: 0, IV: 0 } } } } } });
-            };
-
-            const totalIE = ieData.length;
-            const totalTextos = ieData.reduce((s, ie) => s + ie.totalTextos, 0);
+            // GRÁFICO 2: CIRCULAR
             const promCom = Math.round(ieData.reduce((s, ie) => s + ie.intCom, 0) / (ieData.length || 1));
             const promMat = Math.round(ieData.reduce((s, ie) => s + ie.intMat, 0) / (ieData.length || 1));
-
-            // Gráficos
-            const getConservationDataBars = () => {
-                const labels = ['Bueno', 'Regular', 'Malo', 'No Recuperado'];
-                const comData = [0, 0, 0, 0];
-                const matData = [0, 0, 0, 0];
-                ieData.forEach(ie => {
-                    Object.values(ie.areas.comunicacion.grados).forEach(g => {
-                        comData[0] += g.bueno; comData[1] += g.regular; comData[2] += g.malo; comData[3] += g.noRecuperado;
-                    });
-                    Object.values(ie.areas.matematica.grados).forEach(g => {
-                        matData[0] += g.bueno; matData[1] += g.regular; matData[2] += g.malo; matData[3] += g.noRecuperado;
-                    });
-                });
-                return {
-                    labels,
-                    datasets: [
-                        { label: '📖 Comunicación', data: comData, backgroundColor: 'rgba(54, 162, 235, 0.7)', borderColor: 'rgba(54, 162, 235, 1)', borderWidth: 2 },
-                        { label: '🔢 Matemática', data: matData, backgroundColor: 'rgba(255, 99, 132, 0.7)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 2 }
-                    ]
-                };
-            };
-
-            const getIntegrationPieChart = () => {
-                return {
+            if (charts.circular) charts.circular.destroy();
+            charts.circular = new Chart(document.getElementById('graficoCircular'), {
+                type: 'doughnut',
+                data: {
                     labels: ['📖 Comunicación', '🔢 Matemática'],
                     datasets: [{
                         data: [promCom, promMat],
-                        backgroundColor: ['rgba(54, 162, 235, 0.8)', 'rgba(255, 99, 132, 0.8)'],
-                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
-                        borderWidth: 2
+                        backgroundColor: ['#2196F3', '#FF5722']
                     }]
-                };
-            };
+                }
+            });
 
-            const getBimestreLineChart = () => {
-                const bimestres = ['I', 'II', 'III', 'IV'];
-                const comBim = [0, 0, 0, 0];
-                const matBim = [0, 0, 0, 0];
-                ieData.forEach(ie => {
-                    Object.values(ie.areas.comunicacion.grados).forEach(g => {
-                        bimestres.forEach((b, i) => comBim[i] += g.bimestres[b]);
-                    });
-                    Object.values(ie.areas.matematica.grados).forEach(g => {
-                        bimestres.forEach((b, i) => matBim[i] += g.bimestres[b]);
-                    });
+            // GRÁFICO 3: LÍNEAS
+            const bimData = {I: 0, II: 0, III: 0, IV: 0};
+            ieData.forEach(ie => {
+                Object.values(ie.comBim).forEach(g => {
+                    bimData.I += g.I; bimData.II += g.II; bimData.III += g.III; bimData.IV += g.IV;
                 });
-                return {
-                    labels: bimestres,
-                    datasets: [
-                        { label: '📖 Comunicación %', data: comBim, borderColor: 'rgba(54, 162, 235, 1)', backgroundColor: 'rgba(54, 162, 235, 0.1)', tension: 0.4 },
-                        { label: '🔢 Matemática %', data: matBim, borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.1)', tension: 0.4 }
-                    ]
-                };
-            };
-
-            return React.createElement('div', null,
-                React.createElement('div', { className: 'header' },
-                    React.createElement('div', { className: 'header-left' },
-                        React.createElement('img', { src: `data:image/jpeg;base64,${escudoBase64}`, alt: 'UGEL', className: 'escudo' }),
-                        React.createElement('div', null,
-                            React.createElement('div', { className: 'header-title' }, '🏫 UGEL SULLANA'),
-                            React.createElement('div', { className: 'header-subtitle' }, 'Banco de Libro 2026 - v6.0')
-                        )
-                    ),
-                    React.createElement('div', { className: 'header-right' }, 'Desarrollo e Implementación\nDr. Agusto Segundo\nHidalgo Córdova\n📞 MINEDU Compatible')
-                ),
-                React.createElement('div', { className: 'container' },
-                    React.createElement('div', { className: 'nav-tabs' },
-                        React.createElement('button', { className: `nav-btn ${currentView === 'director' ? 'active' : ''}`, onClick: () => setCurrentView('director') }, '📋 Directoria IE'),
-                        React.createElement('button', { className: `nav-btn ${currentView === 'ugel' ? 'active' : ''}`, onClick: () => setCurrentView('ugel') }, '📊 Dashboard UGEL')
-                    ),
-                    currentView === 'director' && React.createElement('div', null,
-                        React.createElement('div', { className: 'form-section' },
-                            React.createElement('h2', null, '🏢 Registro de Institución Educativa'),
-                            React.createElement('div', { className: 'grid-2' },
-                                React.createElement('div', { className: 'form-group' }, React.createElement('label', null, 'Nombre IE'), React.createElement('input', { type: 'text', name: 'nombreIE', value: formData.nombreIE, onChange: handleInputChange, placeholder: 'Ej: IEP Rosa Cardo de Guarderas' })),
-                                React.createElement('div', { className: 'form-group' }, React.createElement('label', null, 'Código Modular'), React.createElement('input', { type: 'text', name: 'codigoModular', value: formData.codigoModular, onChange: handleInputChange })),
-                                React.createElement('div', { className: 'form-group' }, React.createElement('label', null, 'Director/a'), React.createElement('input', { type: 'text', name: 'director', value: formData.director, onChange: handleInputChange })),
-                                React.createElement('div', { className: 'form-group' }, React.createElement('label', null, 'Teléfono'), React.createElement('input', { type: 'tel', name: 'telefono', value: formData.telefono, onChange: handleInputChange }))
-                            )
-                        ),
-                        React.createElement('div', { className: 'form-section' },
-                            React.createElement('h3', { className: 'area-title' }, '📖 COMUNICACIÓN - ESTADO DE CONSERVACIÓN POR GRADO'),
-                            [1, 2, 3, 4, 5].map(g => React.createElement('div', { key: `com${g}`, className: 'grade-container' },
-                                React.createElement('div', { className: 'grade-title' }, `Grado: ${g}°`),
-                                React.createElement('div', { className: 'grid-5' },
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, 'Total'), React.createElement('input', { type: 'number', value: formData.areas.comunicacion.grados[g].total, onChange: (e) => handleStateChange('comunicacion', g, 'total', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '✅ Bueno'), React.createElement('input', { type: 'number', value: formData.areas.comunicacion.grados[g].bueno, onChange: (e) => handleStateChange('comunicacion', g, 'bueno', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '⚠️ Regular'), React.createElement('input', { type: 'number', value: formData.areas.comunicacion.grados[g].regular, onChange: (e) => handleStateChange('comunicacion', g, 'regular', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '❌ Malo'), React.createElement('input', { type: 'number', value: formData.areas.comunicacion.grados[g].malo, onChange: (e) => handleStateChange('comunicacion', g, 'malo', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '🚫 No Recup'), React.createElement('input', { type: 'number', value: formData.areas.comunicacion.grados[g].noRecuperado, onChange: (e) => handleStateChange('comunicacion', g, 'noRecuperado', e.target.value) }))
-                                )
-                            ))
-                        ),
-                        React.createElement('div', { className: 'form-section' },
-                            React.createElement('h3', { className: 'area-title' }, '📖 COMUNICACIÓN - USO POR BIMESTRE (%)'),
-                            [1, 2, 3, 4, 5].map(g => React.createElement('div', { key: `combim${g}`, className: 'grade-container' },
-                                React.createElement('div', { className: 'grade-title' }, `Grado: ${g}° - Integración en Planificación`),
-                                React.createElement('div', { className: 'grid-4' },
-                                    ['I', 'II', 'III', 'IV'].map(b => React.createElement('div', { key: b, className: 'form-group' },
-                                        React.createElement('label', null, `B${b}`),
-                                        React.createElement('input', { type: 'number', value: formData.areas.comunicacion.grados[g].bimestres[b], onChange: (e) => handleBimestreChange('comunicacion', g, b, e.target.value), max: 100 })
-                                    ))
-                                )
-                            ))
-                        ),
-                        React.createElement('div', { className: 'form-section' },
-                            React.createElement('h3', { className: 'area-title' }, '🔢 MATEMÁTICA - ESTADO DE CONSERVACIÓN POR GRADO'),
-                            [1, 2, 3, 4, 5].map(g => React.createElement('div', { key: `mat${g}`, className: 'grade-container' },
-                                React.createElement('div', { className: 'grade-title' }, `Grado: ${g}°`),
-                                React.createElement('div', { className: 'grid-5' },
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, 'Total'), React.createElement('input', { type: 'number', value: formData.areas.matematica.grados[g].total, onChange: (e) => handleStateChange('matematica', g, 'total', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '✅ Bueno'), React.createElement('input', { type: 'number', value: formData.areas.matematica.grados[g].bueno, onChange: (e) => handleStateChange('matematica', g, 'bueno', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '⚠️ Regular'), React.createElement('input', { type: 'number', value: formData.areas.matematica.grados[g].regular, onChange: (e) => handleStateChange('matematica', g, 'regular', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '❌ Malo'), React.createElement('input', { type: 'number', value: formData.areas.matematica.grados[g].malo, onChange: (e) => handleStateChange('matematica', g, 'malo', e.target.value) })),
-                                    React.createElement('div', { className: 'form-group' }, React.createElement('label', null, '🚫 No Recup'), React.createElement('input', { type: 'number', value: formData.areas.matematica.grados[g].noRecuperado, onChange: (e) => handleStateChange('matematica', g, 'noRecuperado', e.target.value) }))
-                                )
-                            ))
-                        ),
-                        React.createElement('div', { className: 'form-section' },
-                            React.createElement('h3', { className: 'area-title' }, '🔢 MATEMÁTICA - USO POR BIMESTRE (%)'),
-                            [1, 2, 3, 4, 5].map(g => React.createElement('div', { key: `matbim${g}`, className: 'grade-container' },
-                                React.createElement('div', { className: 'grade-title' }, `Grado: ${g}° - Integración en Planificación`),
-                                React.createElement('div', { className: 'grid-4' },
-                                    ['I', 'II', 'III', 'IV'].map(b => React.createElement('div', { key: b, className: 'form-group' },
-                                        React.createElement('label', null, `B${b}`),
-                                        React.createElement('input', { type: 'number', value: formData.areas.matematica.grados[g].bimestres[b], onChange: (e) => handleBimestreChange('matematica', g, b, e.target.value), max: 100 })
-                                    ))
-                                )
-                            ))
-                        ),
-                        React.createElement('div', { className: 'form-section' },
-                            React.createElement('button', { className: 'btn btn-primary', onClick: handleSave, style: { width: '100%', padding: '1rem' } }, '💾 Guardar IE')
-                        )
-                    ),
-                    currentView === 'ugel' && React.createElement('div', null,
-                        React.createElement('h2', null, '📊 Dashboard UGEL Sullana - Reportes'),
-                        React.createElement('div', { className: 'metrics-grid' },
-                            React.createElement('div', { className: 'metric-card' }, React.createElement('div', { className: 'metric-value' }, totalIE), React.createElement('div', { className: 'metric-label' }, 'IE Registradas')),
-                            React.createElement('div', { className: 'metric-card' }, React.createElement('div', { className: 'metric-value' }, totalTextos), React.createElement('div', { className: 'metric-label' }, 'Total Textos')),
-                            React.createElement('div', { className: 'metric-card' }, React.createElement('div', { className: 'metric-value' }, promCom + '%'), React.createElement('div', { className: 'metric-label' }, '📖 Integración Comunicación')),
-                            React.createElement('div', { className: 'metric-card' }, React.createElement('div', { className: 'metric-value' }, promMat + '%'), React.createElement('div', { className: 'metric-label' }, '🔢 Integración Matemática'))
-                        ),
-                        React.createElement('div', { className: 'table-wrapper' },
-                            React.createElement('table', null,
-                                React.createElement('thead', null, React.createElement('tr', null, React.createElement('th', null, 'Institución'), React.createElement('th', null, 'Textos'), React.createElement('th', null, '📖 Com%'), React.createElement('th', null, '🔢 Mat%'))),
-                                React.createElement('tbody', null, ieData.map((ie, i) => React.createElement('tr', { key: i }, React.createElement('td', null, ie.nombreIE), React.createElement('td', null, ie.totalTextos), React.createElement('td', null, ie.intCom + '%'), React.createElement('td', null, ie.intMat + '%'))))
-                            )
-                        ),
-                        React.createElement('div', { className: 'charts-grid' },
-                            React.createElement(ChartComponent, { type: 'bar', data: getConservationDataBars(), title: '📊 Estado de Conservación por Área' }),
-                            React.createElement(ChartComponent, { type: 'doughnut', data: getIntegrationPieChart(), title: '🎯 Integración Promedio por Área' }),
-                            React.createElement(ChartComponent, { type: 'line', data: getBimestreLineChart(), title: '📈 Uso por Bimestre' })
-                        ),
-                        React.createElement('div', { className: 'report-section' },
-                            React.createElement('h3', null, '📋 Datos por Institución'),
-                            ieData.map((ie, i) => React.createElement('div', { key: i, style: { marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '2px solid #eee' } },
-                                React.createElement('h4', { style: { color: '#1e40af', marginBottom: '1rem' } }, `${i + 1}. ${ie.nombreIE}`),
-                                React.createElement('p', null, `📌 Código: ${ie.codigoModular} | 👤 Director: ${ie.director}`),
-                                React.createElement('p', null, `📊 Total Textos: <strong>${ie.totalTextos}</strong> | 📖 Comunicación: <strong>${ie.intCom}%</strong> | 🔢 Matemática: <strong>${ie.intMat}%</strong>`)
-                            ))
-                        )
-                    )
-                )
-            );
+                Object.values(ie.matBim).forEach(g => {
+                    bimData.I += g.I; bimData.II += g.II; bimData.III += g.III; bimData.IV += g.IV;
+                });
+            });
+            if (charts.lineas) charts.lineas.destroy();
+            charts.lineas = new Chart(document.getElementById('graficoLineas'), {
+                type: 'line',
+                data: {
+                    labels: ['Bim I', 'Bim II', 'Bim III', 'Bim IV'],
+                    datasets: [{
+                        label: 'Uso en Planificación %',
+                        data: [bimData.I, bimData.II, bimData.III, bimData.IV],
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        tension: 0.4
+                    }]
+                }
+            });
         }
-
-        ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
     </script>
 </body>
 </html>
